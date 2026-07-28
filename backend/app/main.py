@@ -1,7 +1,6 @@
+from app.core.config import settings
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-
-from app.core.config import settings
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
