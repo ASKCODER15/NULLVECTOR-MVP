@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
+from app.core.config import settings
+
 app = FastAPI(
-    title="OnyxSec API",
+    title=settings.PROJECT_NAME,
+    version=settings.PROJECT_VERSION,
     description="AI-powered Cybersecurity Research Assistant",
-    version="0.1.0",
 )
 
 
@@ -12,8 +14,9 @@ app = FastAPI(
 def root():
     return {
         "status": "online",
-        "project": "OnyxSec",
-        "version": "0.1.0",
+        "project": settings.PROJECT_NAME,
+        "version": settings.PROJECT_VERSION,
+        "debug": settings.DEBUG,
         "message": "Welcome to OnyxSec 🚀",
     }
 
@@ -26,6 +29,6 @@ def health():
             "backend": "running",
             "ai": "offline",
             "database": "offline",
+            "log_level": settings.LOG_LEVEL,
         }
     )
-
