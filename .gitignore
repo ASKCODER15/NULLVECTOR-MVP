@@ -1,7 +1,9 @@
-# Python
+# Virtual Environment
 venv/
+
+# Python Cache
 __pycache__/
-*.pyc
+*.py[cod]
 
 # Environment
 .env
@@ -12,13 +14,10 @@ __pycache__/
 # Logs
 *.log
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Python cache
-.pytest_cache/
-
 # Build
 dist/
 build/
+
+# OS Files
+Thumbs.db
+.DS_Store
