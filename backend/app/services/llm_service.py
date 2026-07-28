@@ -1,27 +1,24 @@
 import requests
-
-LM_STUDIO_URL = "http://127.0.0.1:1234/v1/chat/completions"
-
-MODEL = "qwen/qwen3-8b"
+from app.core.config import settings
 
 
 def ask_llm(prompt: str):
+
     payload = {
-        "model": MODEL,
+        "model": "qwen/qwen3-8b",
         "messages": [
             {
                 "role": "user",
-                "content": prompt,
+                "content": prompt
             }
         ],
-        "temperature": 0.3,
-        "max_tokens": 512,
+        "temperature": 0.7
     }
 
     response = requests.post(
-        LM_STUDIO_URL,
+        f"{settings.LM_STUDIO_URL}/chat/completions",
         json=payload,
-        timeout=120,
+        timeout=120
     )
 
     response.raise_for_status()
