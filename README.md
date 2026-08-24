@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ ONYXSEC.AI
+# 🛡️ NULLVECTOR.AI
 **The Immune System for AI-Generated Infrastructure.**
 
 [![Status](https://img.shields.io/badge/Status-Active_Prototype-10b981?style=for-the-badge&logo=appveyor)](https://github.com/ASKCODER15/OnyxSec-MVP)
