@@ -1,0 +1,38 @@
+{
+  "comment": "Prompt injection detection rules. Edit weights to tune sensitivity; add new patterns freely. 'weight' is penalty per match; 0.0-1.0 range. 'enabled' toggles a rule.",
+  "keyword_patterns": [
+    { "pattern": "\\bignore\\b.*\\b(previous|above|prior|earlier) (instructions|prompts|context|chat|messages|input)\\b", "weight": 0.9, "enabled": true },
+    { "pattern": "\\bdisregard\\b.*\\b(previous|above|prior|earlier) (instructions|prompts|context)\\b", "weight": 0.9, "enabled": true },
+    { "pattern": "\\bforget\\b.*\\b(previous|above|prior) (instructions|prompts|context|rules)\\b", "weight": 0.85, "enabled": true },
+    { "pattern": "\\byour (system |)prompt\\b", "weight": 0.5, "enabled": true },
+    { "pattern": "\\bnot subject to\\b.*\\b(rules|restrictions|guidelines)\\b", "weight": 0.8, "enabled": true },
+    { "pattern": "\\byou are now\\b", "weight": 0.6, "enabled": true },
+    { "pattern": "\\byou will now act as\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bact as\\b.*\\b(omniscient|unfiltered)\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bbut\\b.*\\b(don'?t|do not)\\b.*\\b(follow|obey)\\b.*\\b(rules|guidelines)\\b", "weight": 0.85, "enabled": true },
+    { "pattern": "\\btell me\\b.*\\b(your|the)\\b.*\\b(system )?prompt\\b", "weight": 0.8, "enabled": true },
+    { "pattern": "\\breveal\\b.*\\b(instructions|prompt|system)\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bdev\\s*mode\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bdan\\b", "weight": 0.6, "enabled": true },
+    { "pattern": "\\bjailbreak\\b", "weight": 0.9, "enabled": true },
+    { "pattern": "\\b(don'?t|do not) mention\\b.*\\b(rules|restrictions|safety|filter|guidelines|instructions|an ai|ai model|this (prompt|conversation))\\b", "weight": 0.5, "enabled": true },
+    { "pattern": "\\bpretend\\b.*\\b(no (rules|safety|restrictions|censorship)|unrestricted|unfiltered|can say anything)\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bsimulate\\b.*\\b(bypass|override)\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\boverride\\b.*\\b(instructions|safety|rules|policy)\\b", "weight": 0.8, "enabled": true },
+    { "pattern": "\\bbypass\\b.*\\b(safety|filter|restrictions|rules)\\b", "weight": 0.8, "enabled": true },
+    { "pattern": "\\bremove\\b.*\\b(safety|content )?filter\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bdo not refuse\\b", "weight": 0.8, "enabled": true },
+    { "pattern": "\\byou cannot refuse\\b", "weight": 0.7, "enabled": true },
+    { "pattern": "\\bmust answer\\b", "weight": 0.5, "enabled": true },
+    { "pattern": "\\bno matter what\\b", "weight": 0.5, "enabled": true }
+  ],
+  "line_patterns": [
+    { "pattern": "(?i)system\\s*:.*(?=forget|ignore|you are|act as)", "weight": 0.7, "enabled": true },
+    { "pattern": "(?i)developer\\s*:.*(?=forget|ignore|you are|act as)", "weight": 0.7, "enabled": true },
+    { "pattern": "(?i)human\\s*:.*(?=forget|ignore|you are|act as|disregard)", "weight": 0.6, "enabled": true }
+  ],
+  "scoring": {
+    "diminish_multi": 0.15,
+    "max_score": 1.0
+  }
+}

@@ -1,0 +1,1 @@
+"""Normalized security findings (see docs/PROJECT_CONTEXT.md §6)."""
