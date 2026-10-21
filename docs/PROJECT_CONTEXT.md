@@ -84,7 +84,8 @@ Current important endpoints include:
 
 GET /health
 POST /ask
-POST /scan
+POST /scan/url
+POST /scan/ai
 
 The frontend contains the main product areas:
 

@@ -1,2 +1,4 @@
-streamlit
-groq
+# NullVector dependencies live in backend/requirements.txt.
+#
+# The previous contents of this file (streamlit, groq) belonged to the retired
+# OnyxSec Streamlit prototype. They are not part of the current stack.

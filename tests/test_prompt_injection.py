@@ -11,15 +11,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from ai.scanner.engine.scanner import (  # noqa: E402
+from ai.scanner.engine.scanner import (
     DEFAULT_KEYWORD_PATTERNS,
     load_rules,
     scan,
 )
-from ai.scanner.evaluators.prompt_injection import evaluate  # noqa: E402
-from ai.scanner.reporting.finding import Finding  # noqa: E402
-from ai.scanner.scoring.levels import score_level, severity, confidence  # noqa: E402
-from ai.scanner.tests.prompt_injection.test_cases import PI_TEST_CASES  # noqa: E402
+from ai.scanner.evaluators.prompt_injection import evaluate
+from ai.scanner.reporting.finding import Finding
+from ai.scanner.scoring.levels import confidence, score_level, severity
+from ai.scanner.tests.prompt_injection.test_cases import PI_TEST_CASES
 
 
 class TestScannerEngine(unittest.TestCase):

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NullVector — Security Scan</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">◆</span>
+      <span>NullVector</span>
+    </div>
+    <div class="health" id="health" data-state="unknown" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="health-text">checking…</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" aria-labelledby="scan-heading">
+      <h1 id="scan-heading">Security scan</h1>
+      <p class="lede">
+        Run controlled prompt-injection tests against an AI target, or check a
+        web target's TLS and security headers. Every finding states its evidence,
+        severity, and confidence separately.
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="Scan type">
+        <button type="button" role="tab" id="tab-ai" aria-selected="true" aria-controls="form-ai">
+          AI behavior
+        </button>
+        <button type="button" role="tab" id="tab-url" aria-selected="false" aria-controls="form-url">
+          URL security
+        </button>
+      </div>
+
+      <form id="form-ai" role="tabpanel" aria-labelledby="tab-ai" novalidate>
+        <div class="grid">
+          <label class="field">
+            <span>Target name</span>
+            <input id="ai-name" maxlength="120" placeholder="Demo support bot" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Model</span>
+            <input id="ai-model" maxlength="200" placeholder="Server default" autocomplete="off" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>System prompt</span>
+          <textarea id="ai-system" rows="4" maxlength="8000"
+            placeholder="Leave blank to use the server's demo profile: a support bot holding a fake canary token."></textarea>
+          <span class="hint">The instructions the target runs under. Blank uses the server's demo profile.</span>
+        </label>
+
+        <label class="field">
+          <span>Canary token</span>
+          <input id="ai-canary" maxlength="128" placeholder="Leave blank for the demo canary" autocomplete="off" />
+          <span class="hint">A fake value the target must never disclose. Not a credential.</span>
+        </label>
+
+        <p class="note">Runs 6 test cases against the target, so this can take up to a minute.</p>
+
+        <label class="check">
+          <input type="checkbox" id="ai-authorized" />
+          <span>I own this system or am authorized to test it.</span>
+        </label>
+
+        <button type="submit" id="ai-run" disabled>Run AI scan</button>
+      </form>
+
+      <form id="form-url" role="tabpanel" aria-labelledby="tab-url" hidden novalidate>
+        <label class="field">
+          <span>Target URL</span>
+          <input id="url-input" type="url" maxlength="2048" placeholder="https://example.com/" />
+          <span class="hint">Public targets on ports 80 and 443 only. Private, loopback, and metadata addresses are rejected.</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="url-authorized" />
+          <span>I own this system or am authorized to test it.</span>
+        </label>
+
+        <button type="submit" id="url-run" disabled>Run URL scan</button>
+      </form>
+    </section>
+
+    <section id="status" class="status" hidden aria-live="polite"></section>
+    <section id="results" class="results" hidden aria-live="polite"></section>
+  </main>
+
+  <footer class="foot">
+    Defensive testing only. NullVector makes no changes to the systems it scans.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

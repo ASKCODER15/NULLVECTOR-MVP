@@ -35,3 +35,31 @@ class Finding:
             "recommendation": self.recommendation,
             "timestamp": self.timestamp,
         }
+
+
+def make_finding(
+    *,
+    test_id: str,
+    category: str,
+    status: str,
+    severity: str,
+    confidence: str,
+    summary: str,
+    evidence: str,
+    recommendation: str,
+) -> dict:
+    """Build a normalized finding dict.
+
+    Every scanner module goes through this constructor so the serialized shape
+    cannot drift between modules.
+    """
+    return Finding(
+        test_id=test_id,
+        category=category,
+        status=status,
+        severity=severity,
+        confidence=confidence,
+        summary=summary,
+        evidence=evidence,
+        recommendation=recommendation,
+    ).to_dict()

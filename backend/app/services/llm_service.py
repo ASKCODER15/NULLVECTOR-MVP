@@ -1,10 +1,13 @@
 import requests
 from app.core.config import settings
 
+# A chat answer can legitimately take longer than a scan's per-call budget.
+REQUEST_TIMEOUT = 60
+
 
 def ask_llm(prompt: str):
     payload = {
-        "model": "qwen/qwen3-8b",
+        "model": settings.LM_STUDIO_MODEL,
         "messages": [
             {
                 "role": "user",
@@ -17,7 +20,7 @@ def ask_llm(prompt: str):
     response = requests.post(
         f"{settings.LM_STUDIO_URL}/chat/completions",
         json=payload,
-        timeout=120,
+        timeout=REQUEST_TIMEOUT,
     )
 
     response.raise_for_status()

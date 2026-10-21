@@ -23,6 +23,7 @@ EXPECTED_KEYS = {
     "summary",
     "evidence",
     "recommendation",
+    "timestamp",
 }
 
 VALID_STATUSES = {"pass", "warning", "vulnerable"}
@@ -191,6 +192,45 @@ class UrlScannerTests(unittest.TestCase):
         self.assertEqual(tls["status"], "warning")
         self.assertEqual(tls["severity"], "medium")
         self.assertEqual(result["risk"], "medium")
+
+
+class ResponseSizeTests(unittest.TestCase):
+    """Regression: Content-Length was counted on top of the bytes actually read."""
+
+    class FakeResponse:
+        status_code = 200
+        is_redirect = False
+
+        def __init__(self, body):
+            self._body = body
+            self.headers = {"Content-Length": str(len(body))}
+
+        def iter_content(self, chunk_size=16384):
+            for i in range(0, len(self._body), chunk_size):
+                yield self._body[i:i + chunk_size]
+
+        def close(self):
+            pass
+
+    def fetch(self, body):
+        with mock.patch(
+            "ai.scanner.engine.url_scanner.requests.get",
+            return_value=self.FakeResponse(body),
+        ):
+            return default_fetch("http://93.184.216.34/")
+
+    def test_body_under_cap_is_not_reported_as_truncated(self):
+        body = b"x" * 300_000
+        record = self.fetch(body)
+
+        self.assertEqual(record.body_size, len(body))
+        self.assertFalse(record.truncated)
+
+    def test_body_over_cap_is_truncated(self):
+        record = self.fetch(b"x" * 600_000)
+
+        self.assertTrue(record.truncated)
+        self.assertLessEqual(record.body_size, 524288 + 16384)
 
 
 if __name__ == "__main__":

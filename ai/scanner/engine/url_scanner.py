@@ -26,6 +26,8 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 
+from ..reporting.finding import make_finding
+from ..scoring.levels import overall_risk
 from ..tests.url_security.test_cases import URL_SECURITY_TEST_MAP
 
 ALLOWED_SCHEMES = ("http", "https")
@@ -52,17 +54,6 @@ CLOUD_METADATA_IPS = {
 REQUEST_HEADERS = {
     "User-Agent": "NullVector/0.1 (security scanner; authorized target)",
 }
-
-SEVERITY_RANK = {
-    "info": 0,
-    "low": 1,
-    "medium": 2,
-    "high": 3,
-    "critical": 4,
-}
-
-REVERSE_SEVERITY = {rank: name for name, rank in SEVERITY_RANK.items()}
-
 
 class UnsafeUrlError(ValueError):
     """The target failed a safety check and must not be scanned."""
@@ -240,9 +231,14 @@ def default_fetch(url, *, timeout=REQUEST_TIMEOUT, max_bytes=MAX_RESPONSE_BYTES)
             continue
 
         headers = {key.lower(): value for key, value in response.headers.items()}
-        body_size = int(response.headers.get("Content-Length") or 0)
+        # Count only the bytes actually read. Seeding this from Content-Length
+        # double-counted the body, so any response over half the cap reported a
+        # false "truncated" warning.
+        body_size = 0
         truncated = False
         for chunk in response.iter_content(chunk_size=16384):
+            if not chunk:
+                continue
             body_size += len(chunk)
             if body_size > max_bytes:
                 truncated = True
@@ -264,16 +260,16 @@ def default_fetch(url, *, timeout=REQUEST_TIMEOUT, max_bytes=MAX_RESPONSE_BYTES)
 
 def _new_finding(test_id, status, severity, confidence, summary, evidence):
     meta = URL_SECURITY_TEST_MAP[test_id]
-    return {
-        "test_id": test_id,
-        "category": meta["category"],
-        "status": status,
-        "severity": severity,
-        "confidence": confidence,
-        "summary": summary,
-        "evidence": evidence,
-        "recommendation": meta["recommendation"],
-    }
+    return make_finding(
+        test_id=test_id,
+        category=meta["category"],
+        status=status,
+        severity=severity,
+        confidence=confidence,
+        summary=summary,
+        evidence=evidence,
+        recommendation=meta["recommendation"],
+    )
 
 
 def _check_tls(target, main, fetch):
@@ -445,11 +441,6 @@ def _check_exposure(target, main):
     )
 
 
-def _overall_risk(findings):
-    rank = max(SEVERITY_RANK[finding["severity"]] for finding in findings)
-    return REVERSE_SEVERITY[rank]
-
-
 def run_url_scan(url, *, resolver=None, fetch=None):
     """Run the three URL security checks and return normalized findings."""
     target = resolve_target(url, resolver=resolver)
@@ -466,7 +457,7 @@ def run_url_scan(url, *, resolver=None, fetch=None):
     return {
         "url": url,
         "scanned_at": datetime.now(timezone.utc).isoformat(),
-        "risk": _overall_risk(findings),
+        "risk": overall_risk(findings),
         "findings_count": len(findings),
         "target": {
             "host": target.host,

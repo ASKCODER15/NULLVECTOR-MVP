@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# Starlette's TestClient requires httpx (used by tests/test_ai_scanner.py).
+httpx==0.28.1
